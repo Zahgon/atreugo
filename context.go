@@ -4,11 +4,8 @@ import (
 	"context"
 	"fmt"
 	"sync"
-	"sync/atomic"
 
-	"github.com/fasthttp/router"
 	"github.com/savsgio/gotils/bytes"
-	"github.com/savsgio/gotils/strconv"
 	"github.com/valyala/fasthttp"
 )
 
@@ -30,74 +27,39 @@ var (
 // The returned RequestCtx instance may be passed to ReleaseRequestCtx when it is
 // no longer needed. This allows RequestCtx recycling, reduces GC pressure
 // and usually improves performance.
-func AcquireRequestCtx(ctx *fasthttp.RequestCtx) *RequestCtx {
-	actx, _ := requestCtxPool.Get().(*RequestCtx)
-	actx.RequestCtx = ctx
-
-	return actx
-}
+func AcquireRequestCtx(ctx *fasthttp.RequestCtx) *RequestCtx { _ = "STUB: not implemented"; return nil }
 
 // ReleaseRequestCtx returns ctx acquired via AcquireRequestCtx to request context pool.
 //
 // It is forbidden accessing ctx and/or its' members after returning
 // it to request pool.
-func ReleaseRequestCtx(ctx *RequestCtx) {
-	ctx.next = false
-	ctx.skipView = false
-	atomic.StoreInt32(&ctx.searchingOnAttachedCtx, 0)
-	ctx.RequestCtx = nil
-
-	requestCtxPool.Put(ctx)
-}
+func ReleaseRequestCtx(ctx *RequestCtx) { _ = "STUB: not implemented"; return }
 
 // RequestID returns the "X-Request-ID" header value.
-func (ctx *RequestCtx) RequestID() []byte {
-	return ctx.Request.Header.Peek(XRequestIDHeader)
-}
+func (ctx *RequestCtx) RequestID() []byte { _ = "STUB: not implemented"; return nil }
 
 // Next pass control to the next middleware/view function.
-func (ctx *RequestCtx) Next() error {
-	ctx.next = true
-
-	return nil
-}
+func (ctx *RequestCtx) Next() error { _ = "STUB: not implemented"; return nil }
 
 // SkipView sets flag to skip view execution in the current request
 //
 // Use it in before middlewares.
-func (ctx *RequestCtx) SkipView() {
-	ctx.skipView = true
-}
+func (ctx *RequestCtx) SkipView() { _ = "STUB: not implemented"; return }
 
 // AttachContext attach a context.Context to the RequestCtx
 //
 // WARNING: The extra context could not be itself.
-func (ctx *RequestCtx) AttachContext(extraCtx context.Context) {
-	if extraCtx == ctx {
-		panic("could not attach to itself")
-	}
-
-	ctx.SetUserValue(attachedCtxKey, extraCtx)
-}
+func (ctx *RequestCtx) AttachContext(extraCtx context.Context) { _ = "STUB: not implemented"; return }
 
 // AttachedContext returns the attached context.Context if exist.
 func (ctx *RequestCtx) AttachedContext() context.Context {
-	if extraCtx, ok := ctx.UserValue(attachedCtxKey).(context.Context); ok {
-		return extraCtx
-	}
-
-	return nil
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
 // MatchedRoutePath returns the matched route path
 // if Atreugo.SaveMatchedRoutePath() is enabled.
-func (ctx *RequestCtx) MatchedRoutePath() []byte {
-	if value, ok := ctx.UserValue(router.MatchedRoutePathParam).(string); ok {
-		return strconv.S2B(value)
-	}
-
-	return nil
-}
+func (ctx *RequestCtx) MatchedRoutePath() []byte { _ = "STUB: not implemented"; return nil }
 
 // Value returns the value associated with attached context or this context for key,
 // or nil if no value is associated with key. Successive calls to Value with
@@ -119,14 +81,4 @@ func (ctx *RequestCtx) MatchedRoutePath() []byte {
 //	ctx.Value("myKey")
 //
 // to avoid extra allocation.
-func (ctx *RequestCtx) Value(key any) any {
-	if atomic.CompareAndSwapInt32(&ctx.searchingOnAttachedCtx, 0, 1) {
-		defer atomic.StoreInt32(&ctx.searchingOnAttachedCtx, 0)
-
-		if extraCtx := ctx.AttachedContext(); extraCtx != nil {
-			return extraCtx.Value(key)
-		}
-	}
-
-	return ctx.RequestCtx.Value(key)
-}
+func (ctx *RequestCtx) Value(key any) any { _ = "STUB: not implemented"; return *new(any) }

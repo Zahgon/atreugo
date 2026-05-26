@@ -6,10 +6,7 @@ import (
 	"net"
 	"os"
 
-	"github.com/savsgio/gotils/strconv"
-	"github.com/savsgio/gotils/strings"
 	"github.com/valyala/fasthttp"
-	"github.com/valyala/fasthttp/prefork"
 )
 
 var (
@@ -20,130 +17,17 @@ var (
 )
 
 // New create a new instance of Atreugo Server.
-func New(cfg Config) *Atreugo {
-	if cfg.Network != "" && !strings.Include(validNetworks, cfg.Network) {
-		panic("invalid network: " + cfg.Network)
-	}
+func New(cfg Config) *Atreugo { _ = "STUB: not implemented"; return nil }
 
-	if cfg.Network == "" {
-		cfg.Network = defaultNetwork
-	}
-
-	if cfg.Name == "" {
-		cfg.Name = defaultServerName
-	}
-
-	if cfg.GracefulShutdown && len(cfg.GracefulShutdownSignals) == 0 {
-		cfg.GracefulShutdownSignals = append(cfg.GracefulShutdownSignals, defaultGracefulShutdownSignals...)
-	}
-
-	if cfg.Logger == nil {
-		cfg.Logger = defaultLogger
-	}
-
-	if cfg.JSONMarshalFunc == nil {
-		cfg.JSONMarshalFunc = defaultJSONMarshalFunc
-	}
-
-	if cfg.ErrorView == nil {
-		cfg.ErrorView = defaultErrorView
-	}
-
-	cfg.chmodUnixSocketFunc = chmodFileToSocket
-	cfg.newPreforkServerFunc = newPreforkServer
-
-	r := newRouter(cfg)
-
-	if cfg.NotFoundView != nil {
-		r.router.NotFound = viewToHandler(cfg.NotFoundView, r.errorView)
-	}
-
-	if cfg.MethodNotAllowedView != nil {
-		r.router.MethodNotAllowed = viewToHandler(cfg.MethodNotAllowedView, r.errorView)
-	}
-
-	if cfg.PanicView != nil {
-		r.router.PanicHandler = func(ctx *fasthttp.RequestCtx, err any) {
-			actx := AcquireRequestCtx(ctx)
-			cfg.PanicView(actx, err)
-			ReleaseRequestCtx(actx)
-		}
-	}
-
-	server := &Atreugo{
-		engine: newFasthttpServer(cfg),
-		cfg:    cfg,
-		Router: r,
-	}
-
-	return server
-}
-
-func newFasthttpServer(cfg Config) *fasthttp.Server {
-	return &fasthttp.Server{
-		Name:                               cfg.Name,
-		HeaderReceived:                     cfg.HeaderReceived,
-		ContinueHandler:                    cfg.ContinueHandler,
-		Concurrency:                        cfg.Concurrency,
-		ReadBufferSize:                     cfg.ReadBufferSize,
-		WriteBufferSize:                    cfg.WriteBufferSize,
-		ReadTimeout:                        cfg.ReadTimeout,
-		WriteTimeout:                       cfg.WriteTimeout,
-		IdleTimeout:                        cfg.IdleTimeout,
-		MaxConnsPerIP:                      cfg.MaxConnsPerIP,
-		MaxRequestsPerConn:                 cfg.MaxRequestsPerConn,
-		MaxKeepaliveDuration:               cfg.MaxKeepaliveDuration,
-		MaxIdleWorkerDuration:              cfg.MaxIdleWorkerDuration,
-		TCPKeepalivePeriod:                 cfg.TCPKeepalivePeriod,
-		MaxRequestBodySize:                 cfg.MaxRequestBodySize,
-		DisableKeepalive:                   cfg.DisableKeepalive,
-		TCPKeepalive:                       cfg.TCPKeepalive,
-		ReduceMemoryUsage:                  cfg.ReduceMemoryUsage,
-		GetOnly:                            cfg.GetOnly,
-		DisablePreParseMultipartForm:       cfg.DisablePreParseMultipartForm,
-		LogAllErrors:                       cfg.LogAllErrors,
-		SecureErrorLogMessage:              cfg.SecureErrorLogMessage,
-		DisableHeaderNamesNormalizing:      cfg.DisableHeaderNamesNormalizing,
-		SleepWhenConcurrencyLimitsExceeded: cfg.SleepWhenConcurrencyLimitsExceeded,
-		NoDefaultServerHeader:              cfg.NoDefaultServerHeader,
-		NoDefaultDate:                      cfg.NoDefaultDate,
-		NoDefaultContentType:               cfg.NoDefaultContentType,
-		KeepHijackedConns:                  cfg.KeepHijackedConns,
-		CloseOnShutdown:                    cfg.CloseOnShutdown,
-		StreamRequestBody:                  cfg.StreamRequestBody,
-		ConnState:                          cfg.ConnState,
-		Logger:                             cfg.Logger,
-		TLSConfig:                          cfg.TLSConfig,
-		FormValueFunc:                      cfg.FormValueFunc,
-	}
-}
+func newFasthttpServer(cfg Config) *fasthttp.Server { _ = "STUB: not implemented"; return nil }
 
 func (s *Atreugo) handler() fasthttp.RequestHandler {
-	handler := s.router.Handler
-
-	if len(s.virtualHosts) > 0 {
-		handler = func(ctx *fasthttp.RequestCtx) {
-			hostname := strconv.B2S(ctx.URI().Host())
-
-			if h := s.virtualHosts[hostname]; h != nil {
-				h(ctx)
-			} else {
-				s.router.Handler(ctx)
-			}
-		}
-	}
-
-	if s.cfg.Compress {
-		handler = fasthttp.CompressHandler(handler)
-	}
-
-	return handler
+	_ = "STUB: not implemented"
+	return *new(fasthttp.RequestHandler)
 }
 
 // IsPreforkChild checks if the current thread/process is a child.
-func IsPreforkChild() bool {
-	return prefork.IsChild()
-}
+func IsPreforkChild() bool { _ = "STUB: not implemented"; return false }
 
 // SaveMatchedRoutePath if enabled, adds the matched route path onto the ctx.UserValue context
 // before invoking the handler.
@@ -151,9 +35,7 @@ func IsPreforkChild() bool {
 // registered when this option was enabled.
 //
 // It's deactivated by default.
-func (s *Atreugo) SaveMatchedRoutePath(v bool) {
-	s.router.SaveMatchedRoutePath = v
-}
+func (s *Atreugo) SaveMatchedRoutePath(v bool) { _ = "STUB: not implemented"; return }
 
 // RedirectTrailingSlash enables/disables automatic redirection if the current route
 // can't be matched but a handler for the path with (without) the trailing slash exists.
@@ -162,9 +44,7 @@ func (s *Atreugo) SaveMatchedRoutePath(v bool) {
 // and 307 for all other request methods.
 //
 // It's activated by default.
-func (s *Atreugo) RedirectTrailingSlash(v bool) {
-	s.router.RedirectTrailingSlash = v
-}
+func (s *Atreugo) RedirectTrailingSlash(v bool) { _ = "STUB: not implemented"; return }
 
 // RedirectFixedPath if enabled, the router tries to fix the current request path, if no
 // handle is registered for it.
@@ -177,9 +57,7 @@ func (s *Atreugo) RedirectTrailingSlash(v bool) {
 // RedirectTrailingSlash is independent of this option.
 //
 // It's activated by default.
-func (s *Atreugo) RedirectFixedPath(v bool) {
-	s.router.RedirectFixedPath = v
-}
+func (s *Atreugo) RedirectFixedPath(v bool) { _ = "STUB: not implemented"; return }
 
 // HandleMethodNotAllowed if enabled, the router checks if another method is allowed for the
 // current route, if the current request can not be routed.
@@ -189,17 +67,13 @@ func (s *Atreugo) RedirectFixedPath(v bool) {
 // handler.
 //
 // It's activated by default.
-func (s *Atreugo) HandleMethodNotAllowed(v bool) {
-	s.router.HandleMethodNotAllowed = v
-}
+func (s *Atreugo) HandleMethodNotAllowed(v bool) { _ = "STUB: not implemented"; return }
 
 // HandleOPTIONS if enabled, the router automatically replies to OPTIONS requests.
 // Custom OPTIONS handlers take priority over automatic replies.
 //
 // It's activated by default.
-func (s *Atreugo) HandleOPTIONS(v bool) {
-	s.handleOPTIONS = v
-}
+func (s *Atreugo) HandleOPTIONS(v bool) { _ = "STUB: not implemented"; return }
 
 // ServeConn serves HTTP requests from the given connection.
 //
@@ -210,39 +84,18 @@ func (s *Atreugo) HandleOPTIONS(v bool) {
 // to the client. Otherwise requests' processing may hang.
 //
 // ServeConn closes c before returning.
-func (s *Atreugo) ServeConn(c net.Conn) error {
-	s.engine.Handler = s.handler()
+func (s *Atreugo) ServeConn(c net.Conn) error { _ = "STUB: not implemented"; return nil }
 
-	return s.engine.ServeConn(c) // nolint:wrapcheck
-}
+// nolint:wrapcheck
 
 // Serve serves incoming connections from the given listener.
 //
 // Serve blocks until the given listener returns permanent error.
-func (s *Atreugo) Serve(ln net.Listener) error {
-	defer ln.Close()
+func (s *Atreugo) Serve(ln net.Listener) error { _ = "STUB: not implemented"; return nil }
 
-	s.cfg.Addr = ln.Addr().String()
-	s.cfg.Network = ln.Addr().Network()
-	s.engine.Handler = s.handler()
+// nolint:wrapcheck
 
-	if strings.Include(tcpNetworks, s.cfg.Network) {
-		schema := "http"
-		if s.cfg.TLSEnable {
-			schema = "https"
-		}
-
-		s.cfg.Logger.Printf("Listening on: %s://%s/", schema, s.cfg.Addr)
-	} else {
-		s.cfg.Logger.Printf("Listening on (network: %s): %s ", s.cfg.Network, s.cfg.Addr)
-	}
-
-	if s.cfg.TLSEnable {
-		return s.engine.ServeTLS(ln, s.cfg.CertFile, s.cfg.CertKey) // nolint:wrapcheck
-	}
-
-	return s.engine.Serve(ln) // nolint:wrapcheck
-}
+// nolint:wrapcheck
 
 // NewVirtualHost returns a new sub-router for running more than one web site
 // (such as company1.example.com and company2.example.com) on a single atreugo instance.
@@ -254,28 +107,8 @@ func (s *Atreugo) Serve(ln net.Listener) error {
 //
 // If you pass multiples hostnames, all of them will have the same behaviour.
 func (s *Atreugo) NewVirtualHost(hostnames ...string) *Router {
-	if len(hostnames) == 0 {
-		panic("at least 1 hostname is required")
-	}
-
-	if s.virtualHosts == nil {
-		s.virtualHosts = make(map[string]fasthttp.RequestHandler)
-	}
-
-	vHost := newRouter(s.cfg)
-	vHost.router.NotFound = s.router.NotFound
-	vHost.router.MethodNotAllowed = s.router.MethodNotAllowed
-	vHost.router.PanicHandler = s.router.PanicHandler
-
-	for _, name := range hostnames {
-		if s.virtualHosts[name] != nil {
-			panicf("a router is already registered for virtual host: %s", name)
-		}
-
-		s.virtualHosts[name] = vHost.router.Handler
-	}
-
-	return vHost
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // Shutdown gracefully shuts down the server without interrupting any active connections.
@@ -287,13 +120,7 @@ func (s *Atreugo) NewVirtualHost(hostnames ...string) *Router {
 //
 // Shutdown does not close keepalive connections so it's recommended to set ReadTimeout
 // and IdleTimeout to something else than 0.
-func (s *Atreugo) Shutdown() (err error) {
-	if s.engine != nil {
-		err = s.engine.ShutdownWithContext(context.Background())
-	}
-
-	return
-}
+func (s *Atreugo) Shutdown() (err error) { _ = "STUB: not implemented"; return nil }
 
 // ShutdownWithContext gracefully shuts down the server without interrupting any active
 // connections. ShutdownWithContext works by first closing all open listeners and then
@@ -306,9 +133,6 @@ func (s *Atreugo) Shutdown() (err error) {
 // ShutdownWithContext does not close keepalive connections so it's recommended to set
 // ReadTimeout and IdleTimeout to something else than 0.
 func (s *Atreugo) ShutdownWithContext(ctx context.Context) (err error) {
-	if s.engine != nil {
-		err = s.engine.ShutdownWithContext(ctx)
-	}
-
-	return
+	_ = "STUB: not implemented"
+	return nil
 }

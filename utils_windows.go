@@ -3,10 +3,9 @@
 
 package atreugo
 
-func chmodFileToSocket(filepath string) error {
-	return nil
-}
+func chmodFileToSocket(filepath string) error { _ = "STUB: not implemented"; return nil }
 
 func newPreforkServer(s *Atreugo) preforkServer {
-	return newPreforkServerBase(s)
+	_ = "STUB: not implemented"
+	return *new(preforkServer)
 }
